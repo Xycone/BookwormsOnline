@@ -1,0 +1,39 @@
+﻿@page
+@model BookwormsOnline.Pages.UserInfoModel
+@{
+}
+
+<h1>User Information</h1>
+
+
+@if (Model.UserInfo.Photo != null)
+{
+    <div>
+        <img src="data:image/jpeg;base64,@Convert.ToBase64String(Model.UserInfo.Photo)" alt="User Photo" style="max-width: 300px; max-height: 300px;" />
+    </div>
+}
+
+<div>
+    <dl>
+        <dt>Email:</dt>
+        <dd>@Model.UserInfo.Email</dd>
+
+        <dt>First Name:</dt>
+        <dd>@Model.UserInfo.FirstName</dd>
+
+        <dt>Last Name:</dt>
+        <dd>@Model.UserInfo.LastName</dd>
+
+        <dt>Credit Card No:</dt>
+        <dd>@Model.UserInfo.CreditCardNo</dd>
+
+        <dt>Mobile No:</dt>
+        <dd>@Model.UserInfo.MobileNo</dd>
+
+        <dt>Billing Address:</dt>
+        <dd>@Model.UserInfo.BillingAddress</dd>
+
+        <dt>Shipping Address:</dt>
+        <dd>@Model.UserInfo.ShippingAddress</dd>
+    </dl>
+</div>
