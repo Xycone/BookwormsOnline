@@ -1,10 +1,25 @@
 ﻿using BookwormsOnline.Extensions;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
 namespace BookwormsOnline.Model
 {
-    public class AuthDbContext : IdentityDbContext<BookwormsUser>
+	public class LogEntry
+	{
+		public int Id { get; set; }
+
+		[Required]
+		public string Email { get; set; }
+
+		[Required]
+		public string Activity { get; set; }
+
+		[Required]
+		public DateTime Time { get; set; }
+	}
+
+	public class AuthDbContext : IdentityDbContext<BookwormsUser>
 	{
         private readonly IConfiguration _configuration;
         //public AuthDbContext(DbContextOptions<AuthDbContext> options):base(options){ }
@@ -14,7 +29,11 @@ namespace BookwormsOnline.Model
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            string connectionString = _configuration.GetConnectionString("AuthConnectionString"); optionsBuilder.UseSqlServer(connectionString);
+            string connectionString = _configuration.GetConnectionString("AuthConnectionString"); 
+			optionsBuilder.UseSqlServer(connectionString);
         }
-    }
+
+		public DbSet<LogEntry> LogEntries { get; set; }
+	}
+
 }

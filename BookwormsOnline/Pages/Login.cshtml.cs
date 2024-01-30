@@ -29,9 +29,9 @@ namespace BookwormsOnline.Pages
 		public string RecaptchaToken { get; set; }
 
 		private readonly SignInManager<BookwormsUser> signInManager;
-		private readonly ActivityLogsDbContext activityLogsDbContext;
+		private readonly AuthDbContext activityLogsDbContext;
 
-		public LoginModel(SignInManager<BookwormsUser> signInManager, ActivityLogsDbContext activityLogsDbContext)
+		public LoginModel(SignInManager<BookwormsUser> signInManager, AuthDbContext activityLogsDbContext)
 		{
 			this.signInManager = signInManager;
 			this.activityLogsDbContext = activityLogsDbContext;

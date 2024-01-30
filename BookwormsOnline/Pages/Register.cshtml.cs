@@ -17,12 +17,12 @@ namespace BookwormsOnline.Pages
 
         private UserManager<BookwormsUser> userManager { get; }
         private SignInManager<BookwormsUser> signInManager { get; }
-		private readonly ActivityLogsDbContext activityLogsDbContext;
+		private readonly AuthDbContext activityLogsDbContext;
 
 		[BindProperty]
         public Register RModel { get; set; }
 
-        public RegisterModel(UserManager<BookwormsUser> userManager, SignInManager<BookwormsUser> signInManager, ActivityLogsDbContext activityLogsDbContext)
+        public RegisterModel(UserManager<BookwormsUser> userManager, SignInManager<BookwormsUser> signInManager, AuthDbContext activityLogsDbContext)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;

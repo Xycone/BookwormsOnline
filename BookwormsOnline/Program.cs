@@ -9,7 +9,6 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddDbContext<AuthDbContext>();
-builder.Services.AddDbContext<ActivityLogsDbContext>();
 builder.Services.AddIdentity<BookwormsUser, IdentityRole>( options =>
 {
     options.Password.RequireDigit = true;

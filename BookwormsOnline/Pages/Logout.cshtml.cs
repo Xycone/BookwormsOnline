@@ -11,8 +11,8 @@ namespace BookwormsOnline.Pages
     {
 
 		private readonly SignInManager<BookwormsUser> signInManager;
-		private readonly ActivityLogsDbContext activityLogsDbContext;
-		public LogoutModel(SignInManager<BookwormsUser> signInManager, ActivityLogsDbContext activityLogsDbContext)
+		private readonly AuthDbContext activityLogsDbContext;
+		public LogoutModel(SignInManager<BookwormsUser> signInManager, AuthDbContext activityLogsDbContext)
 		{
 			this.signInManager = signInManager;
 			this.activityLogsDbContext = activityLogsDbContext;
