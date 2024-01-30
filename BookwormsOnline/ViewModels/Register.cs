@@ -51,8 +51,5 @@ namespace BookwormsOnline.ViewModels
         [DataType(DataType.Password)]
         [Compare(nameof(Password), ErrorMessage = "Password and confirmation password does not match")]
         public string ConfirmPassword { get; set; }
-
-		// property for 2fa
-		public bool Enable2FA { get; set; }
 	}
 }

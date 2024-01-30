@@ -11,20 +11,24 @@ using System.Text.Json;
 
 namespace BookwormsOnline.Pages
 {
+	public class MyObject
+	{
+		public bool success { get; set; }
+		public float score { get; set; }
+		public List<string> errorMessage { get; set; }
 
-    public class LoginModel : PageModel
+
+	}
+
+	public class LoginModel : PageModel
     {
-		// used by captcha
-		public class MyObject
-		{
-			public bool success { get; set; }
-			public List<string> errorMessage { get; set; }
-		}
-
 		[BindProperty]
         public Login LModel { get; set; }
 
-        private readonly SignInManager<BookwormsUser> signInManager;
+		[BindProperty]
+		public string RecaptchaToken { get; set; }
+
+		private readonly SignInManager<BookwormsUser> signInManager;
 		private readonly ActivityLogsDbContext activityLogsDbContext;
 
 		public LoginModel(SignInManager<BookwormsUser> signInManager, ActivityLogsDbContext activityLogsDbContext)
@@ -95,33 +99,27 @@ namespace BookwormsOnline.Pages
 
 		private bool ValidateCaptcha()
 		{
-			bool result = true;
 
-			string captchaResponse = Request.Form["g-recaptcha-response"];
+			string secretKey = "6LezN2EpAAAAAKo_nT0CBhPNbybyFYljGM30n5VX";
+			string captchaResponse = RecaptchaToken;
 
-			HttpWebRequest req = (HttpWebRequest)WebRequest.Create("https://www.google.com/recaptcha/api/siteverify?secret=6LchCGApAAAAACj4jpaWp34hYqToHLlNe7V0XIdl &response=" + captchaResponse);
+			string apiUrl = $"https://www.google.com/recaptcha/api/siteverify?secret={secretKey}&response={captchaResponse}";
 
-			try
+			using (var client = new WebClient())
 			{
-				using (WebResponse wResponse = req.GetResponse())
+				string jsonResponse = client.DownloadString(apiUrl);
+				var jsonObject = JsonSerializer.Deserialize<MyObject>(jsonResponse);
+
+				if (jsonObject != null && jsonObject.success)
 				{
-					using (StreamReader readStream = new StreamReader(wResponse.GetResponseStream()))
-					{
-						string jsonResponse = readStream.ReadToEnd();
-						var jsonObject = JsonSerializer.Deserialize<MyObject>(jsonResponse);
-
-
-						if (jsonObject != null)
-						{
-							result = jsonObject.success;
-						}
-					}
+					// I wanted to check the score :)
+					System.Diagnostics.Debug.WriteLine(jsonObject.score);
+					return true;
 				}
-				return result;
-			}
-			catch (WebException ex)
-			{
-				throw ex;
+				else
+				{
+					return false;
+				}
 			}
 		}
 	}

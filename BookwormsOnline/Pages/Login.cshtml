@@ -3,7 +3,7 @@
 @{
 }
 
-<script src="https://www.google.com/recaptcha/api.js"></script>
+<script src="https://www.google.com/recaptcha/api.js?render=6LezN2EpAAAAAE9H06U3ptFZi-79xlXKE8GTjJ1N"></script>
 <div class="container mt-5">
 
 	<div class="row justify-content-center align-items-center">
@@ -31,11 +31,38 @@
 					<label class="form-check-label" asp-for="LModel.RememberMe">Remember Me?</label>
 				</div>
 
-				<div class="g-recaptcha" data-sitekey="6LchCGApAAAAAINkCcoeMDAw72V9XiYyG6bN0Tbz"></div>
+				<input type="hidden" id="RecaptchaToken" name="RecaptchaToken" />
+
 				<div class="mb-3">
-					<button type="submit" class="btn btn-primary">Login</button>
+					<button type="submit" class="btn btn-primary" onclick="onClick(event)">Login</button>
 				</div>
 			</form>
+			<script>
+				function onClick(e) {
+					e.preventDefault();
+					grecaptcha.ready(function () {
+						grecaptcha.execute('6LezN2EpAAAAAE9H06U3ptFZi-79xlXKE8GTjJ1N', { action: 'submit' }).then(function (token) {
+							document.getElementById('RecaptchaToken').value = token;
+							document.querySelector('form').submit();
+						});
+					});
+				}
+
+				async function submitFormWithToken(token) {
+					// Set the value of the hidden field with the reCAPTCHA token
+					document.getElementById('RecaptchaToken').value = token;
+
+					// Submits form to backend
+					const form = document.querySelector('form');
+					await fetch(form.action, {
+						method: form.method,
+						body: new FormData(form),
+						headers: {
+							'RequestVerificationToken': document.getElementsByName('__RequestVerificationToken')[0].value
+						}
+					});
+				}
+			</script>
 		</div>
 	</div>
 </div>
