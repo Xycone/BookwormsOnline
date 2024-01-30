@@ -33,10 +33,18 @@ namespace BookwormsOnline.Pages
 
 			// Signs user out and logs the sign out in the db
 			await signInManager.SignOutAsync();
-			activityLogsDbContext.LogEntries.Add(logLogout);
-			activityLogsDbContext.SaveChanges();
+			try
+			{
+				activityLogsDbContext.LogEntries.Add(logLogout);
+				activityLogsDbContext.SaveChanges();
 
-			return RedirectToPage("Login");
+                return RedirectToPage("Login");
+            }
+			catch (Exception ex)
+			{
+                Console.Error.WriteLine($"Error logging sign-out: {ex.Message}");
+                return RedirectToPage("Login");
+            }
 		}
 		public async Task<IActionResult> OnPostDontLogoutAsync()
 		{
