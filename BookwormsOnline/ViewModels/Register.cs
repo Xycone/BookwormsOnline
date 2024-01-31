@@ -14,10 +14,12 @@ namespace BookwormsOnline.ViewModels
 		public IFormFile Photo { get; set; }
 
 		[Required]
-        public string FirstName { get; set; }
+		[RegularExpression(@"[a-zA-Z]", ErrorMessage = "Only letters allowed")]
+		public string FirstName { get; set; }
 
         [Required]
-        public string LastName { get; set; }
+		[RegularExpression(@"[a-zA-Z]", ErrorMessage = "Only letters allowed")]
+		public string LastName { get; set; }
 
         [Required]
         [DataType(DataType.CreditCard)]

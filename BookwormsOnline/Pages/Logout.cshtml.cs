@@ -35,6 +35,7 @@ namespace BookwormsOnline.Pages
 			await signInManager.SignOutAsync();
 			try
 			{
+				HttpContext.Session.Clear();
 				activityLogsDbContext.LogEntries.Add(logLogout);
 				activityLogsDbContext.SaveChanges();
 
