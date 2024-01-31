@@ -30,11 +30,13 @@ namespace BookwormsOnline.Pages
 
 		private readonly SignInManager<BookwormsUser> signInManager;
 		private readonly AuthDbContext activityLogsDbContext;
+        private UserManager<BookwormsUser> userManager { get; }
 
-		public LoginModel(SignInManager<BookwormsUser> signInManager, AuthDbContext activityLogsDbContext)
+        public LoginModel(SignInManager<BookwormsUser> signInManager, AuthDbContext activityLogsDbContext, UserManager<BookwormsUser> userManager)
 		{
 			this.signInManager = signInManager;
 			this.activityLogsDbContext = activityLogsDbContext;
+			this.userManager = userManager;
         }
 
 		public async Task<IActionResult> OnPostAsync()
@@ -62,9 +64,11 @@ namespace BookwormsOnline.Pages
 					activityLogsDbContext.LogEntries.Add(logSuccessfulEntry);
 					activityLogsDbContext.SaveChanges();
 
-					var claims = new List<Claim>
+                    var user = await userManager.FindByEmailAsync(LModel.Email);
+                    var claims = new List<Claim>
 					{
-						new Claim(ClaimTypes.Email,  LModel.Email)
+						new Claim(ClaimTypes.Email,  LModel.Email),
+						new Claim(ClaimTypes.NameIdentifier, user.Id)
 					};
 					var i = new ClaimsIdentity(claims, "MyCookieAuth");
 					ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(i);

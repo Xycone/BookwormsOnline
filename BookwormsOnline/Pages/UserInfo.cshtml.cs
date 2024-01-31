@@ -1,4 +1,5 @@
 using BookwormsOnline.Extensions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -6,6 +7,8 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace BookwormsOnline.Pages
 {
+    [Authorize]
+    [ValidateAntiForgeryToken]
     public class UserInfoModel : PageModel
     {
 		private readonly UserManager<BookwormsUser> userManager;

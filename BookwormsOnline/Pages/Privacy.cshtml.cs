@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 namespace BookwormsOnline.Pages
 {
     [Authorize]
+    [ValidateAntiForgeryToken]
     public class PrivacyModel : PageModel
     {
         private readonly ILogger<PrivacyModel> _logger;

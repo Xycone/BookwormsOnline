@@ -35,7 +35,7 @@ builder.Services.AddAuthorization(options =>
 builder.Services.ConfigureApplicationCookie(Config =>
 {
 	Config.Cookie.HttpOnly = true;
-    Config.ExpireTimeSpan = TimeSpan.FromMinutes(10);
+    Config.ExpireTimeSpan = TimeSpan.FromSeconds(10);
 	Config.LoginPath = "/Login";
 	Config.AccessDeniedPath = "/Login";
 	Config.SlidingExpiration = true;
