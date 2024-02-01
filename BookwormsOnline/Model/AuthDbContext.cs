@@ -19,6 +19,21 @@ namespace BookwormsOnline.Model
 		public DateTime Time { get; set; }
 	}
 
+	public class PasswordHistory
+	{
+        public int Id { get; set; }
+
+        [Required]
+        public string UserId { get; set; }
+
+        [Required]
+        public string LoggedPasswordHash { get; set; }
+
+        [Required]
+        public DateTime CreatedAt { get; set; }
+
+    }
+
 	public class AuthDbContext : IdentityDbContext<BookwormsUser>
 	{
         private readonly IConfiguration _configuration;
@@ -34,6 +49,7 @@ namespace BookwormsOnline.Model
         }
 
 		public DbSet<LogEntry> LogEntries { get; set; }
-	}
+        public DbSet<PasswordHistory> PasswordHistory { get; set; }
+    }
 
 }

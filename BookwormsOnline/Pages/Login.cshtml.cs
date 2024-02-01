@@ -29,13 +29,13 @@ namespace BookwormsOnline.Pages
 		public string RecaptchaToken { get; set; }
 
 		private readonly SignInManager<BookwormsUser> signInManager;
-		private readonly AuthDbContext activityLogsDbContext;
+		private readonly AuthDbContext context;
         private UserManager<BookwormsUser> userManager { get; }
 
-        public LoginModel(SignInManager<BookwormsUser> signInManager, AuthDbContext activityLogsDbContext, UserManager<BookwormsUser> userManager)
+        public LoginModel(SignInManager<BookwormsUser> signInManager, AuthDbContext context, UserManager<BookwormsUser> userManager)
 		{
 			this.signInManager = signInManager;
-			this.activityLogsDbContext = activityLogsDbContext;
+			this.context = context;
 			this.userManager = userManager;
         }
 
@@ -61,10 +61,12 @@ namespace BookwormsOnline.Pages
 						Time = DateTime.UtcNow
 					};
 
-					activityLogsDbContext.LogEntries.Add(logSuccessfulEntry);
-					activityLogsDbContext.SaveChanges();
+					context.LogEntries.Add(logSuccessfulEntry);
+					context.SaveChanges();
 
-                    var user = await userManager.FindByEmailAsync(LModel.Email);
+
+					// User claims
+					var user = await userManager.FindByEmailAsync(LModel.Email);
                     var claims = new List<Claim>
 					{
 						new Claim(ClaimTypes.Email,  LModel.Email),
@@ -73,6 +75,26 @@ namespace BookwormsOnline.Pages
 					var i = new ClaimsIdentity(claims, "MyCookieAuth");
 					ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(i);
 					await HttpContext.SignInAsync("MyCookieAuth", claimsPrincipal);
+
+
+					// Prompts the user to change their password
+					var lastPasswordChange = context.PasswordHistory
+						.Where(ph => ph.UserId == user.Id)
+						.OrderByDescending(ph => ph.CreatedAt)
+						.FirstOrDefault();
+
+					if (lastPasswordChange != null)
+					{
+						// password minimum duration
+						var maximumDuration = TimeSpan.FromMinutes(30);
+
+						var timeDifference = DateTime.UtcNow - lastPasswordChange.CreatedAt;
+
+						if (timeDifference > maximumDuration)
+						{
+							return RedirectToPage("ChangePassword");
+						}
+					}
 
 					return RedirectToPage("UserInfo");
 				}
@@ -91,8 +113,8 @@ namespace BookwormsOnline.Pages
 						Time = DateTime.UtcNow
 					};
 
-					activityLogsDbContext.LogEntries.Add(logFailedEntry);
-					activityLogsDbContext.SaveChanges();
+					context.LogEntries.Add(logFailedEntry);
+					context.SaveChanges();
 
 					ModelState.AddModelError("", "Invalid Login Attempt, Username or Password incorrect");
 				}

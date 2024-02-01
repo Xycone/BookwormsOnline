@@ -17,16 +17,16 @@ namespace BookwormsOnline.Pages
 
         private UserManager<BookwormsUser> userManager { get; }
         private SignInManager<BookwormsUser> signInManager { get; }
-		private readonly AuthDbContext activityLogsDbContext;
+		private readonly AuthDbContext context;
 
 		[BindProperty]
         public Register RModel { get; set; }
 
-        public RegisterModel(UserManager<BookwormsUser> userManager, SignInManager<BookwormsUser> signInManager, AuthDbContext activityLogsDbContext)
+        public RegisterModel(UserManager<BookwormsUser> userManager, SignInManager<BookwormsUser> signInManager, AuthDbContext context)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
-            this.activityLogsDbContext = activityLogsDbContext;
+            this.context = context;
         }
 
         public void OnGet()
@@ -57,7 +57,7 @@ namespace BookwormsOnline.Pages
 
 				var result = await userManager.CreateAsync(user, RModel.Password);
                 if (result.Succeeded)
-                {
+                { 
                     await signInManager.SignInAsync(user, false);
 					var logSuccessfulEntry = new LogEntry
 					{
@@ -66,10 +66,24 @@ namespace BookwormsOnline.Pages
 						Time = DateTime.UtcNow
 					};
 
-					activityLogsDbContext.LogEntries.Add(logSuccessfulEntry);
-					activityLogsDbContext.SaveChanges();
+					context.LogEntries.Add(logSuccessfulEntry);
+					context.SaveChanges();
 
-					return RedirectToPage("UserInfo");
+                    // Logs hashed password associated to user for password history later on
+                    var newPasswordHash = userManager.PasswordHasher.HashPassword(user, RModel.Password);
+
+                    var passwordHistoryEntry = new PasswordHistory
+                    {
+                        UserId = user.Id,
+                        LoggedPasswordHash = newPasswordHash,
+                        CreatedAt = DateTime.UtcNow
+                    };
+
+                    context.PasswordHistory.Add(passwordHistoryEntry);
+                    context.SaveChanges();
+
+
+                    return RedirectToPage("UserInfo");
                 }
                 foreach (var error in result.Errors)
                 {

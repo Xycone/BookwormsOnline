@@ -11,11 +11,15 @@ builder.Services.AddRazorPages();
 builder.Services.AddDbContext<AuthDbContext>();
 builder.Services.AddIdentity<BookwormsUser, IdentityRole>( options =>
 {
+    // Password requirements
     options.Password.RequireDigit = true;
     options.Password.RequireLowercase = true;
     options.Password.RequireUppercase = true;
     options.Password.RequireNonAlphanumeric = true;
     options.Password.RequiredLength = 12;
+
+    // Set maximum password age
+
 
     // Account lockout
     options.Lockout.MaxFailedAccessAttempts = 3;
@@ -35,7 +39,7 @@ builder.Services.AddAuthorization(options =>
 builder.Services.ConfigureApplicationCookie(Config =>
 {
 	Config.Cookie.HttpOnly = true;
-    Config.ExpireTimeSpan = TimeSpan.FromSeconds(10);
+    Config.ExpireTimeSpan = TimeSpan.FromMinutes(10);
 	Config.LoginPath = "/Login";
 	Config.AccessDeniedPath = "/Login";
 	Config.SlidingExpiration = true;

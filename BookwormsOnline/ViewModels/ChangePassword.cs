@@ -13,6 +13,7 @@ namespace BookwormsOnline.ViewModels
         [Required]
         [DataType(DataType.Password)]
         [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,}$", ErrorMessage = "Passwords must be at least 8 characters long and contain at least an uppercase letter, lowercase letter, digit and a symbol")]
+        [PreventOldPassword]
         public string NewPassword { get; set; }
 
         [Required]

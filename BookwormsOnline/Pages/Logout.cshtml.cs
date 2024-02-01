@@ -11,11 +11,11 @@ namespace BookwormsOnline.Pages
     {
 
 		private readonly SignInManager<BookwormsUser> signInManager;
-		private readonly AuthDbContext activityLogsDbContext;
-		public LogoutModel(SignInManager<BookwormsUser> signInManager, AuthDbContext activityLogsDbContext)
+		private readonly AuthDbContext context;
+		public LogoutModel(SignInManager<BookwormsUser> signInManager, AuthDbContext context)
 		{
 			this.signInManager = signInManager;
-			this.activityLogsDbContext = activityLogsDbContext;
+			this.context = context;
 		}
 
 
@@ -36,8 +36,8 @@ namespace BookwormsOnline.Pages
 			try
 			{
 				HttpContext.Session.Clear();
-				activityLogsDbContext.LogEntries.Add(logLogout);
-				activityLogsDbContext.SaveChanges();
+				context.LogEntries.Add(logLogout);
+				context.SaveChanges();
 
                 return RedirectToPage("Login");
             }

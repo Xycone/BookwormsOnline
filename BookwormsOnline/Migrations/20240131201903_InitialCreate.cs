@@ -71,6 +71,21 @@ namespace BookwormsOnline.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "PasswordHistory",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LoggedPasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PasswordHistory", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -235,6 +250,9 @@ namespace BookwormsOnline.Migrations
 
             migrationBuilder.DropTable(
                 name: "LogEntries");
+
+            migrationBuilder.DropTable(
+                name: "PasswordHistory");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
