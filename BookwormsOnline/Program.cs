@@ -1,8 +1,10 @@
+using BookwormsOnline.EmailSender;
 using BookwormsOnline.Extensions;
 using BookwormsOnline.Model;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
+using SendGrid;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,7 +26,9 @@ builder.Services.AddIdentity<BookwormsUser, IdentityRole>( options =>
     // Account lockout
     options.Lockout.MaxFailedAccessAttempts = 3;
     options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(10);
-}).AddEntityFrameworkStores<AuthDbContext>();
+})
+    .AddEntityFrameworkStores<AuthDbContext>()
+	.AddTokenProvider<DataProtectorTokenProvider<BookwormsUser>>(TokenOptions.DefaultProvider);
 
 
 builder.Services.AddAuthentication("MyCookieAuth").AddCookie("MyCookieAuth", options =>
@@ -45,6 +49,7 @@ builder.Services.ConfigureApplicationCookie(Config =>
 	Config.SlidingExpiration = true;
 });
 
+builder.Services.AddScoped<EmailSender>();
 
 var app = builder.Build();
 
