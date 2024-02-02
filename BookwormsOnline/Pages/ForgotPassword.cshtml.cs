@@ -40,9 +40,18 @@ namespace BookwormsOnline.Pages
 				var emailSubject = "Password Reset";
 				var htmlLink = $"Click the following link to reset your password: <a href='{HtmlEncoder.Default.Encode(resetLink)}'>Reset Password Link</a>";
 
-				await emailSender.SendEmailAsync(user.Email, emailSubject, htmlLink);
+				// Try to send the email
+				if (await emailSender.SendEmailAsync(user.Email, emailSubject, htmlLink))
+				{
+					// Email sent successfully, set model error
+					ModelState.AddModelError("", "Reset link has been sent to the email");
+				}
+				else
+				{
+					ModelState.AddModelError("", "Something went wrong");
+				}
 
-				ModelState.AddModelError("", "Reset link has been sent to the email");
+
 			}
 			else { 
 				ModelState.AddModelError("", "User dont exist");
