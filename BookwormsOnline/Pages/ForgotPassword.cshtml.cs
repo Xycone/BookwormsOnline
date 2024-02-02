@@ -42,7 +42,7 @@ namespace BookwormsOnline.Pages
 
 				await emailSender.SendEmailAsync(user.Email, emailSubject, htmlLink);
 
-				ModelState.AddModelError("", "Email sent");
+				ModelState.AddModelError("", "Reset link has been sent to the email");
 			}
 			else { 
 				ModelState.AddModelError("", "User dont exist");

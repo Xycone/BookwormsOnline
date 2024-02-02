@@ -25,7 +25,7 @@ builder.Services.AddIdentity<BookwormsUser, IdentityRole>( options =>
 
     // Account lockout
     options.Lockout.MaxFailedAccessAttempts = 3;
-    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(10);
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromSeconds(10);
 })
     .AddEntityFrameworkStores<AuthDbContext>()
 	.AddTokenProvider<DataProtectorTokenProvider<BookwormsUser>>(TokenOptions.DefaultProvider);
